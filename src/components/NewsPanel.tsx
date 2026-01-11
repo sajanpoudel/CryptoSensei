@@ -1,5 +1,4 @@
 import React from 'react';
-import { Clock } from 'lucide-react';
 import type { NewsItem } from '../services/types';
 
 interface NewsPanelProps {
@@ -51,7 +50,7 @@ export const NewsPanel: React.FC<NewsPanelProps> = ({ crypto, news }) => {
             href={item.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="block p-4 rounded-lg bg-slate-700/50 hover:bg-slate-600/50 transition-colors"
+            className="block p-4 rounded-lg bg-neutral-900/60 hover:bg-neutral-900/80 transition-colors border border-neutral-800"
           >
             {/* Image Section */}
             {item.imageUrl && (
@@ -69,20 +68,19 @@ export const NewsPanel: React.FC<NewsPanelProps> = ({ crypto, news }) => {
 
             {/* Content Section */}
             <div className="space-y-2">
-              <h4 className="font-medium text-gray-200">
+              <h4 className="font-medium text-neutral-100">
                 {item.title}
               </h4>
               
               {item.description && (
-                <p className="text-sm text-gray-300">
+                <p className="text-sm text-neutral-300">
                   {truncateDescription(item.description)}
                 </p>
               )}
 
               {/* Metadata Section */}
-              <div className="flex items-center justify-between text-xs text-gray-400 mt-2">
+              <div className="flex items-center justify-between text-xs text-neutral-500 mt-2">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
                   <span>{new Date(item.timestamp).toLocaleDateString(undefined, {
                     year: 'numeric',
                     month: 'short',
@@ -96,9 +94,9 @@ export const NewsPanel: React.FC<NewsPanelProps> = ({ crypto, news }) => {
                   <span>{item.source}</span>
                   {item.sentiment && (
                     <span className={`px-2 py-1 rounded-full text-xs ${
-                      item.sentiment === 'positive' ? 'bg-green-500/20 text-green-400' :
-                      item.sentiment === 'negative' ? 'bg-red-500/20 text-red-400' :
-                      'bg-yellow-500/20 text-yellow-400'
+                      item.sentiment === 'positive' ? 'bg-white/10 text-neutral-100' :
+                      item.sentiment === 'negative' ? 'bg-neutral-800 text-neutral-200' :
+                      'bg-neutral-900 text-neutral-300'
                     }`}>
                       {item.sentiment}
                     </span>
@@ -112,7 +110,7 @@ export const NewsPanel: React.FC<NewsPanelProps> = ({ crypto, news }) => {
                   {item.aiTags.map((tag, tagIndex) => (
                     <span
                       key={tagIndex}
-                      className="px-2 py-1 rounded-full bg-blue-500/20 text-blue-400 text-xs"
+                      className="px-2 py-1 rounded-full bg-neutral-800 text-neutral-300 text-xs"
                     >
                       {tag}
                     </span>
@@ -123,9 +121,9 @@ export const NewsPanel: React.FC<NewsPanelProps> = ({ crypto, news }) => {
           </a>
         ))
       ) : (
-        <div className="text-center text-gray-400 py-8">
+        <div className="text-center text-neutral-400 py-8">
           <p>No news available for {crypto}</p>
-          <p className="text-sm mt-2">Check back later for updates</p>
+          <p className="text-sm mt-2 text-neutral-500">Check back later for updates</p>
         </div>
       )}
     </div>

@@ -51,11 +51,11 @@ export const TradingView: React.FC<TradingViewProps> = ({ crypto, timeframe, pri
         // Add price overlay
         if (price && typeof price.price !== 'undefined' && typeof price.change24h !== 'undefined') {
           const priceOverlay = document.createElement('div');
-          priceOverlay.className = 'absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg p-2 text-sm z-10';
+          priceOverlay.className = 'absolute top-4 right-4 bg-neutral-950/70 backdrop-blur-sm rounded-lg p-2 text-sm z-10 border border-neutral-800';
           priceOverlay.innerHTML = `
             <div class="flex items-center gap-2">
-              <span class="text-white font-medium">$${price.price.toLocaleString()}</span>
-              <span class="${price.change24h >= 0 ? 'text-green-400' : 'text-red-400'}">
+              <span class="text-neutral-100 font-medium">$${price.price.toLocaleString()}</span>
+              <span class="text-neutral-400">
                 ${price.change24h >= 0 ? '+' : ''}${price.change24h.toFixed(2)}%
               </span>
             </div>
@@ -86,7 +86,7 @@ export const TradingView: React.FC<TradingViewProps> = ({ crypto, timeframe, pri
               theme: 'dark',
               style: '1',
               locale: 'en',
-              toolbar_bg: '#f1f3f6',
+              toolbar_bg: '#0f0f0f',
               enable_publishing: false,
               allow_symbol_change: true,
               save_image: false,
@@ -110,7 +110,7 @@ export const TradingView: React.FC<TradingViewProps> = ({ crypto, timeframe, pri
         console.error('Error initializing TradingView widget:', error);
         if (container.current) {
           container.current.innerHTML = `
-            <div class="flex items-center justify-center h-full text-slate-400">
+            <div class="flex items-center justify-center h-full text-neutral-400">
               Error loading chart. Please try again later.
             </div>
           `;
@@ -128,10 +128,10 @@ export const TradingView: React.FC<TradingViewProps> = ({ crypto, timeframe, pri
   return (
     <div 
       ref={container} 
-      className="w-full h-[600px] bg-black/30 rounded-lg overflow-hidden"
+      className="w-full h-[600px] bg-neutral-950/50 rounded-lg overflow-hidden border border-neutral-800"
       style={{ minHeight: '600px' }}
     >
-      <div className="flex items-center justify-center h-full text-slate-400">
+      <div className="flex items-center justify-center h-full text-neutral-400">
         Loading chart...
       </div>
     </div>

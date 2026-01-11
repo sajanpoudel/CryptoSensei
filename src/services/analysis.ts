@@ -1,7 +1,6 @@
-import { GoogleGenAI } from "@google/genai";
 import { api } from "./api";
 
-const genAI = new GoogleGenAI({apiKey: import.meta.env.VITE_GEMINI_API});
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
 interface TechnicalIndicators {
   currentPrice: number;
@@ -111,8 +110,10 @@ class AnalysisService {
   private calculateMACD(prices: number[]) {
     const ema12 = this.calculateEMA(prices, 12);
     const ema26 = this.calculateEMA(prices, 26);
-    const macdLine = ema12[ema12.length - 1] - ema26[ema26.length - 1];
-    const signalLine = this.calculateEMA([macdLine], 9)[0];
+    const macdSeries = ema12.map((value, index) => value - ema26[index]);
+    const macdLine = macdSeries[macdSeries.length - 1];
+    const signalSeries = this.calculateEMA(macdSeries, 9);
+    const signalLine = signalSeries[signalSeries.length - 1];
     const histogram = macdLine - signalLine;
     
     return {
@@ -125,13 +126,14 @@ class AnalysisService {
 
   private interpretMACD(macdLine: number, signalLine: number, histogram: number): string {
     let interpretation = '';
+    const strengthThreshold = Math.max(0.01, Math.abs(macdLine) * 0.1);
 
     if (histogram > 0) {
-      interpretation = histogram > histogram * 0.1 
+      interpretation = Math.abs(histogram) > strengthThreshold
         ? 'Strong bullish momentum' 
         : 'Bullish momentum';
     } else {
-      interpretation = histogram < -histogram * 0.1 
+      interpretation = Math.abs(histogram) > strengthThreshold
         ? 'Strong bearish momentum' 
         : 'Bearish momentum';
     }
@@ -188,9 +190,10 @@ class AnalysisService {
       const negativeCount = newsItems.filter(n => n.sentiment === 'negative').length;
       const total = newsItems.length || 1;
 
+      const newsScore = (positiveCount / total) * 100;
       return {
-        newsScore: (positiveCount / total) * 100,
-        socialScore: Math.random() * 100, // Placeholder for social score
+        newsScore,
+        socialScore: Math.min(100, Math.max(0, newsScore)),
         marketMood: positiveCount > negativeCount ? 'Bullish' : 
                    negativeCount > positiveCount ? 'Bearish' : 'Neutral'
       };
@@ -219,7 +222,11 @@ class AnalysisService {
 
     // Calculate Stochastic RSI
     const lastRSI = rsiValues[rsiValues.length - 1];
-    return ((lastRSI - minRSI) / (maxRSI - minRSI)) * 100;
+    const range = maxRSI - minRSI;
+    if (!Number.isFinite(range) || range === 0) {
+      return 50;
+    }
+    return ((lastRSI - minRSI) / range) * 100;
   }
 
   private interpretStochRSI(stochRSI: number): string {
@@ -369,17 +376,20 @@ class AnalysisService {
       Remove any markdown formatting and ensure all price levels are properly formatted with $ symbol.
     `;
 
-    const result = await genAI.models.generateContent({
-      model: "gemini-2.5-flash-preview-04-17",
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      config: {
-        thinkingConfig: {
-          thinkingBudget: 0,
-        },
+    const response = await fetch(`${API_BASE_URL}/api/ai/analysis`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
       },
+      body: JSON.stringify({ prompt })
     });
 
-    return result.text ?? "";
+    if (!response.ok) {
+      throw new Error(`AI analysis failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.text ?? "";
   }
 
   private interpretRSI(rsi: number): string {
@@ -406,7 +416,8 @@ class AnalysisService {
 
     // MACD confidence (0-100)
     const macdConfidence = (() => {
-      const signalStrength = Math.abs(macd.histogram) / Math.abs(macd.signal);
+      const signalDenominator = Math.max(0.01, Math.abs(macd.signal));
+      const signalStrength = Math.abs(macd.histogram) / signalDenominator;
       const normalizedStrength = Math.min(100, signalStrength * 100);
       return normalizedStrength;
     })();
@@ -662,10 +673,10 @@ class AnalysisService {
       // Parse strategy
       const strategyDiv = doc.querySelector('.strategy');
       if (strategyDiv) {
-        const position = strategyDiv.querySelector('.position .value')?.textContent?.trim();
-        const entry = strategyDiv.querySelector('.levels .entry')?.textContent?.trim();
-        const stop = strategyDiv.querySelector('.levels .stop')?.textContent?.trim();
-        const target = strategyDiv.querySelector('.levels .target')?.textContent?.trim();
+        const position = strategyDiv.querySelector('.position-strategy')?.textContent?.trim();
+        const entry = strategyDiv.querySelector('.risk-management .entry')?.textContent?.trim();
+        const stop = strategyDiv.querySelector('.risk-management .stop')?.textContent?.trim();
+        const target = strategyDiv.querySelector('.risk-management .target')?.textContent?.trim();
 
         if (position || entry || stop || target) {
           sections.strategy.push({

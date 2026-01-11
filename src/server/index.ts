@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
+import { GoogleGenAI } from '@google/genai';
 import { WebSocketServer, WebSocket } from 'ws';
 import type { Request, Response, NextFunction } from 'express';
 import http from 'http';
@@ -28,6 +29,39 @@ const NEWSDATA_API_KEY = process.env.VITE_NEWSDATA_API_KEY;
 const NEWS_CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
 let lastNewsRequest = 0;
 const NEWS_REQUEST_DELAY = 60 * 1000; // 1 minute between requests
+
+const geminiClient = process.env.GEMINI_API_KEY
+  ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
+  : null;
+
+app.post('/api/ai/analysis', async (req: Request, res: Response) => {
+  const { prompt } = req.body as { prompt?: string };
+
+  if (!prompt) {
+    return res.status(400).json({ error: 'Missing prompt' });
+  }
+
+  if (!geminiClient) {
+    return res.status(500).json({ error: 'Gemini API key not configured' });
+  }
+
+  try {
+    const result = await geminiClient.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      config: {
+        thinkingConfig: {
+          thinkingBudget: 0
+        }
+      }
+    });
+
+    return res.json({ text: result.text ?? '' });
+  } catch (error: any) {
+    console.error('Gemini API error:', error?.message || error);
+    return res.status(500).json({ error: 'Gemini API request failed' });
+  }
+});
 
 // Add news endpoint with proper error handling and rate limiting
 app.get('/api/news/:crypto', async (req: Request, res: Response) => {
