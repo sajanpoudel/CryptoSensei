@@ -107,39 +107,43 @@ export const strategyGenerator = {
 
   determineRecommendation(technicalSignals: any, marketCondition: any): { recommendation: string; confidence: number } {
     const { rsi, macd } = technicalSignals.momentum;
-    const trend = technicalSignals.trend.primary;
-    const marketPhase = marketCondition.phase.toLowerCase();
+    const trendRaw = technicalSignals.trend.primary ?? 'neutral';
+    const trend = String(trendRaw).toLowerCase();
+    const marketPhase = String(marketCondition.phase ?? 'neutral').toLowerCase();
+    const rsiValue = typeof rsi?.value === 'number' ? rsi.value : 50;
+    const macdSignal = String(macd?.signal ?? '').toLowerCase();
+    const baseConfidence = Math.round(this.calculateConfidence(technicalSignals, marketCondition));
 
-    // Determine base recommendation
-    let recommendation = '';
-    let confidence = 0;
+    let recommendation = 'Hold';
+    let confidence = Math.min(95, Math.max(35, baseConfidence));
 
-    if (rsi.value > 70 && trend === 'bullish') {
+    if (rsiValue > 70 && trend.includes('bullish')) {
       recommendation = 'Take Profit';
-      confidence = Math.min(85, rsi.value);
-    } else if (rsi.value < 30 && trend === 'bearish') {
+      confidence = Math.max(confidence, Math.min(90, rsiValue));
+    } else if (rsiValue < 30 && trend.includes('bearish')) {
       recommendation = 'Buy';
-      confidence = Math.min(85, 100 - rsi.value);
-    } else if (marketPhase === 'accumulation' && rsi.value < 40) {
+      confidence = Math.max(confidence, Math.min(90, 100 - rsiValue));
+    } else if (trend.includes('bullish') && (macdSignal.includes('bullish') || rsiValue > 55)) {
       recommendation = 'Buy';
-      confidence = 65;
-    } else if (marketPhase === 'distribution' && rsi.value > 60) {
+      confidence = Math.max(confidence, 65);
+    } else if (trend.includes('bearish') && (macdSignal.includes('bearish') || rsiValue < 45)) {
       recommendation = 'Sell';
-      confidence = 65;
-    } else {
-      recommendation = 'Hold';
-      confidence = 50;
+      confidence = Math.max(confidence, 65);
+    } else if (marketPhase.includes('accumulation')) {
+      recommendation = 'Buy';
+      confidence = Math.max(confidence, 60);
+    } else if (marketPhase.includes('distribution')) {
+      recommendation = 'Sell';
+      confidence = Math.max(confidence, 60);
     }
 
-    // Adjust confidence based on MACD confirmation
-    if (macd.signal.includes('bullish') && recommendation === 'Buy') {
-      confidence += 10;
-    } else if (macd.signal.includes('bearish') && recommendation === 'Sell') {
-      confidence += 10;
+    if (macdSignal.includes('bullish') && recommendation === 'Buy') {
+      confidence += 8;
+    } else if (macdSignal.includes('bearish') && recommendation === 'Sell') {
+      confidence += 8;
     }
 
-    // Cap confidence at 95%
-    confidence = Math.min(95, Math.round(confidence * 100) / 100); // Round to 2 decimal places
+    confidence = Math.min(95, Math.round(confidence * 100) / 100);
 
     return { recommendation, confidence };
   },

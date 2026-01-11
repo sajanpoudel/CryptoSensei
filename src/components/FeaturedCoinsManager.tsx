@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FeaturedCoin } from '../services/types';
 import { Switch } from './ui/switch'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Search, GripVertical, Plus, Trash2, TrendingUp, BarChart2, X } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { Input } from './ui/input'
 import { Button } from './ui/button';
@@ -130,22 +129,22 @@ export const FeaturedCoinsManager: React.FC<FeaturedCoinsManagerProps> = ({
   }, []);
 
   return (
-    <Card className="bg-black/30 backdrop-blur-lg border-none">
+    <Card className="bg-neutral-950/50 backdrop-blur-lg border border-neutral-800">
       <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-        <CardTitle className="text-xl font-bold text-blue-300">
+        <CardTitle className="text-xl font-semibold text-neutral-100">
           Featured Coins
         </CardTitle>
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <span className="text-sm text-slate-400">
+          <span className="text-sm text-neutral-400">
             {activeCoinsCount}/{MAX_ACTIVE_COINS} Active
           </span>
           <Button
             variant="ghost"
             size="icon"
             onClick={toggleSearch}
-            className="text-blue-400 hover:text-blue-300"
+            className="text-neutral-100 hover:text-neutral-300"
           >
-            {isSearching ? <X className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+            {isSearching ? 'Close' : 'Add'}
           </Button>
         </div>
       </CardHeader>
@@ -154,7 +153,7 @@ export const FeaturedCoinsManager: React.FC<FeaturedCoinsManagerProps> = ({
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-4 p-2 bg-red-500/20 text-red-400 rounded-lg text-sm"
+            className="mb-4 p-2 bg-neutral-900 text-neutral-300 rounded-lg text-sm border border-neutral-800"
           >
             {error}
           </motion.div>
@@ -173,17 +172,16 @@ export const FeaturedCoinsManager: React.FC<FeaturedCoinsManagerProps> = ({
                 ref={searchContainerRef}
                 className="relative"
               >
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
                 <Input
                   placeholder="Search coins..."
                   value={searchTerm}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="pl-10 bg-slate-800/50 border-slate-700"
+                  className="pl-4 bg-neutral-900/60 border-neutral-800 text-neutral-100"
                   autoFocus
                 />
                 {searchResults.length > 0 && (
                   <div
-                    className="absolute w-full mt-2 bg-slate-800 rounded-lg shadow-lg z-10 max-h-[300px] overflow-y-auto"
+                    className="absolute w-full mt-2 bg-neutral-950 rounded-lg shadow-lg z-10 max-h-[300px] overflow-y-auto border border-neutral-800"
                   >
                     {searchResults.map((result) => (
                       <button
@@ -192,10 +190,10 @@ export const FeaturedCoinsManager: React.FC<FeaturedCoinsManagerProps> = ({
                           e.preventDefault();
                           handleAddCoin(result);
                         }}
-                        className="w-full px-4 py-2 text-left hover:bg-slate-700 text-sm text-slate-200 flex items-center justify-between"
+                        className="w-full px-4 py-2 text-left hover:bg-neutral-900 text-sm text-neutral-200 flex items-center justify-between"
                       >
                         <span>{result.name} ({result.symbol})</span>
-                        <Plus className="h-4 w-4 text-slate-400" />
+                        <span className="text-xs text-neutral-500">Add</span>
                       </button>
                     ))}
                   </div>
@@ -223,28 +221,26 @@ export const FeaturedCoinsManager: React.FC<FeaturedCoinsManagerProps> = ({
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="bg-slate-800/50 p-3 rounded-lg backdrop-blur-sm"
+                        className="bg-neutral-900/60 p-3 rounded-lg backdrop-blur-sm border border-neutral-800"
                       >
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-2">
                           {/* Drag Handle */}
                           <div {...provided.dragHandleProps} className="px-2">
-                            <GripVertical className="h-4 w-4 text-slate-400" />
+                            <span className="text-neutral-500 text-sm">⋮⋮</span>
                           </div>
 
                           {/* Coin Info */}
                           <div className="flex-1 px-2 min-w-0">
                             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                              <span className="text-sm font-medium text-white truncate">
+                              <span className="text-sm font-medium text-neutral-100 truncate">
                                 {coin.name} ({coin.symbol})
                               </span>
                               {coinMetadata[coin.id] && (
-                                <div className="flex items-center gap-2 text-xs text-slate-400">
+                                <div className="flex items-center gap-2 text-xs text-neutral-500">
                                   <span className="flex items-center whitespace-nowrap">
-                                    <TrendingUp className="h-3 w-3 mr-1" />
                                     ${coinMetadata[coin.id].price.toLocaleString()}
                                   </span>
                                   <span className="flex items-center whitespace-nowrap">
-                                    <BarChart2 className="h-3 w-3 mr-1" />
                                     ${coinMetadata[coin.id].marketCap.toLocaleString()}
                                   </span>
                                 </div>
@@ -263,9 +259,9 @@ export const FeaturedCoinsManager: React.FC<FeaturedCoinsManagerProps> = ({
                               variant="ghost"
                               size="icon"
                               onClick={() => onRemoveCoin(coin.id)}
-                              className="text-red-400 hover:text-red-300"
+                              className="text-neutral-400 hover:text-neutral-200"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              Remove
                             </Button>
                           </div>
                         </div>

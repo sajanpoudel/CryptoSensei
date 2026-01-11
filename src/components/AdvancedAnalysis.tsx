@@ -5,7 +5,6 @@ import { SentimentOverview } from './analysis/SentimentOverview';
 import { PricePredictions } from './analysis/PricePredictions';
 import { RiskAnalysis } from './analysis/RiskAnalysis';
 import { TradingStrategy } from './analysis/TradingStrategy';
-import { Loader2 } from 'lucide-react';
 import { PredictionData } from '@/services/types';
 
 interface AdvancedAnalysisProps {
@@ -18,10 +17,10 @@ export const AdvancedAnalysis = ({ crypto, predictions }: AdvancedAnalysisProps)
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8 text-white">
+      <div className="flex items-center justify-center p-8 text-neutral-100">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-          <p>Loading advanced analysis...</p>
+          <div className="h-10 w-10 rounded-full border border-neutral-600 border-t-transparent animate-spin" />
+          <p className="text-sm text-neutral-300">Loading advanced analysis...</p>
         </div>
       </div>
     );
@@ -29,11 +28,11 @@ export const AdvancedAnalysis = ({ crypto, predictions }: AdvancedAnalysisProps)
 
   if (error) {
     return (
-      <div className="p-8 text-center text-red-400">
+      <div className="p-8 text-center text-neutral-300">
         <p>Error loading analysis: {error}</p>
         <button 
           onClick={() => window.location.reload()}
-          className="mt-4 px-4 py-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
+          className="mt-4 px-4 py-2 bg-neutral-800 rounded-lg hover:bg-neutral-700 transition-colors text-neutral-100"
         >
           Retry
         </button>
@@ -43,7 +42,7 @@ export const AdvancedAnalysis = ({ crypto, predictions }: AdvancedAnalysisProps)
 
   if (!analysis) {
     return (
-      <div className="p-8 text-center text-slate-400">
+      <div className="p-8 text-center text-neutral-400">
         <p>No analysis data available</p>
       </div>
     );

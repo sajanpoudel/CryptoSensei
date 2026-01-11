@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Brain, TrendingUp, TrendingDown, Activity, Target, AlertTriangle, Clock, BarChart, LineChart, PieChart } from 'lucide-react';
 import { analysisService } from '../services/analysis';
 import { motion } from 'framer-motion';
 import { PredictionData } from '@/services/types';
@@ -69,29 +68,21 @@ const formatAIAnalysis = (htmlContent: string) => {
     <div className="space-y-6">
       {/* Market Analysis Section */}
       {sections.marketAnalysis && (
-        <div className="border-l-4 border-blue-500 pl-4">
-          <h4 className="text-lg font-semibold text-blue-400 mb-2">Strategic Market Analysis</h4>
-          <p className="text-gray-300 leading-relaxed">{sections.marketAnalysis}</p>
+        <div className="border-l-2 border-neutral-700 pl-4">
+          <h4 className="text-lg font-semibold text-neutral-100 mb-2">Strategic Market Analysis</h4>
+          <p className="text-neutral-300 leading-relaxed">{sections.marketAnalysis}</p>
         </div>
       )}
 
       {/* Trading Signals Section - Only show if there are signals */}
       {sections.signals.length > 0 && (
-        <div className="border-l-4 border-green-500 pl-4">
-          <h4 className="text-lg font-semibold text-green-400 mb-2">Critical Trading Signals</h4>
+        <div className="border-l-2 border-neutral-700 pl-4">
+          <h4 className="text-lg font-semibold text-neutral-100 mb-2">Critical Trading Signals</h4>
           <ul className="space-y-3">
             {sections.signals.map((signal, index) => (
-              <li key={index} className="flex items-start gap-2 bg-slate-700/30 p-3 rounded-lg">
-                <div className="mt-1">
-                  {signal.toLowerCase().includes('bullish') || signal.toLowerCase().includes('positive') ? (
-                    <TrendingUp className="w-4 h-4 text-green-400" />
-                  ) : signal.toLowerCase().includes('bearish') || signal.toLowerCase().includes('negative') ? (
-                    <TrendingDown className="w-4 h-4 text-red-400" />
-                  ) : (
-                    <Activity className="w-4 h-4 text-yellow-400" />
-                  )}
-                </div>
-                <span className="text-gray-300">{signal}</span>
+              <li key={index} className="flex items-start gap-2 bg-neutral-900/60 p-3 rounded-lg border border-neutral-800">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-neutral-500" />
+                <span className="text-neutral-300">{signal}</span>
               </li>
             ))}
           </ul>
@@ -100,13 +91,13 @@ const formatAIAnalysis = (htmlContent: string) => {
 
       {/* Strategy Section - Only show if there's content */}
       {(sections.strategy.overview || sections.strategy.entry || sections.strategy.targets) && (
-        <div className="border-l-4 border-purple-500 pl-4">
-          <h4 className="text-lg font-semibold text-purple-400 mb-2">Strategic Recommendations</h4>
+        <div className="border-l-2 border-neutral-700 pl-4">
+          <h4 className="text-lg font-semibold text-neutral-100 mb-2">Strategic Recommendations</h4>
           
           {/* Strategy Overview */}
           {sections.strategy.overview && (
-            <div className="mb-4 bg-slate-700/30 p-3 rounded-lg">
-              <p className="text-gray-300 leading-relaxed">{sections.strategy.overview}</p>
+            <div className="mb-4 bg-neutral-900/60 p-3 rounded-lg border border-neutral-800">
+              <p className="text-neutral-300 leading-relaxed">{sections.strategy.overview}</p>
             </div>
           )}
 
@@ -114,32 +105,29 @@ const formatAIAnalysis = (htmlContent: string) => {
           {(sections.strategy.entry || sections.strategy.stop || sections.strategy.targets) && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               {sections.strategy.entry && (
-                <div className="bg-slate-700/30 p-4 rounded-lg">
-                  <h5 className="text-sm font-semibold text-blue-400 mb-2 flex items-center gap-2">
-                    <Target className="w-4 h-4" />
+                <div className="bg-neutral-900/60 p-4 rounded-lg border border-neutral-800">
+                  <h5 className="text-sm font-semibold text-neutral-100 mb-2 flex items-center gap-2">
                     Entry Zones
                   </h5>
-                  <p className="text-gray-300">{sections.strategy.entry}</p>
+                  <p className="text-neutral-300">{sections.strategy.entry}</p>
                 </div>
               )}
 
               {sections.strategy.stop && (
-                <div className="bg-slate-700/30 p-4 rounded-lg">
-                  <h5 className="text-sm font-semibold text-red-400 mb-2 flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4" />
+                <div className="bg-neutral-900/60 p-4 rounded-lg border border-neutral-800">
+                  <h5 className="text-sm font-semibold text-neutral-100 mb-2 flex items-center gap-2">
                     Stop Loss
                   </h5>
-                  <p className="text-gray-300">{sections.strategy.stop}</p>
+                  <p className="text-neutral-300">{sections.strategy.stop}</p>
                 </div>
               )}
 
               {sections.strategy.targets && (
-                <div className="bg-slate-700/30 p-4 rounded-lg">
-                  <h5 className="text-sm font-semibold text-green-400 mb-2 flex items-center gap-2">
-                    <Target className="w-4 h-4" />
+                <div className="bg-neutral-900/60 p-4 rounded-lg border border-neutral-800">
+                  <h5 className="text-sm font-semibold text-neutral-100 mb-2 flex items-center gap-2">
                     Targets
                   </h5>
-                  <p className="text-gray-300">{sections.strategy.targets}</p>
+                  <p className="text-neutral-300">{sections.strategy.targets}</p>
                 </div>
               )}
             </div>
@@ -147,12 +135,11 @@ const formatAIAnalysis = (htmlContent: string) => {
 
           {/* Timeframe - Only show if there's a value */}
           {sections.strategy.timeframe && (
-            <div className="bg-slate-700/30 p-4 rounded-lg">
-              <h5 className="text-sm font-semibold text-yellow-400 mb-2 flex items-center gap-2">
-                <Clock className="w-4 h-4" />
+            <div className="bg-neutral-900/60 p-4 rounded-lg border border-neutral-800">
+              <h5 className="text-sm font-semibold text-neutral-100 mb-2 flex items-center gap-2">
                 Timeframe
               </h5>
-              <p className="text-gray-300">{sections.strategy.timeframe}</p>
+              <p className="text-neutral-300">{sections.strategy.timeframe}</p>
             </div>
           )}
         </div>
@@ -220,29 +207,24 @@ export const MarketAnalysis: React.FC<MarketAnalysisProps> = ({ crypto, predicti
   if (loading) {
     const loadingSteps = [
       { 
-        icon: LineChart, 
         text: "Collecting market data and price history...",
-        color: "text-blue-400"
+        color: "bg-neutral-200"
       },
       { 
-        icon: Brain, 
         text: "Analyzing technical indicators and patterns...",
-        color: "text-purple-400"
+        color: "bg-neutral-300"
       },
       { 
-        icon: BarChart, 
         text: "Processing market sentiment and volume data...",
-        color: "text-green-400"
+        color: "bg-neutral-400"
       },
       { 
-        icon: PieChart, 
         text: "Calculating risk metrics and support/resistance...",
-        color: "text-yellow-400"
+        color: "bg-neutral-500"
       },
       { 
-        icon: Activity, 
         text: "Generating price predictions and strategies...",
-        color: "text-red-400"
+        color: "bg-neutral-600"
       }
     ];
 
@@ -250,7 +232,7 @@ export const MarketAnalysis: React.FC<MarketAnalysisProps> = ({ crypto, predicti
       <div className="flex flex-col items-center justify-center min-h-[400px] relative">
         {/* Background animation */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-blue-500/5 rounded-lg"
+          className="absolute inset-0 bg-gradient-to-br from-neutral-900/40 via-neutral-950/60 to-neutral-900/40 rounded-lg"
           animate={{
             backgroundPosition: ['0% 0%', '100% 100%'],
             scale: [1, 1.02, 1],
@@ -275,28 +257,25 @@ export const MarketAnalysis: React.FC<MarketAnalysisProps> = ({ crypto, predicti
                   delay: index * 0.5 // Sequential appearance
                 }
               }}
-              className="flex items-center gap-4 bg-slate-800/50 p-4 rounded-lg backdrop-blur-sm border border-slate-700/50"
+              className="flex items-center gap-4 bg-neutral-900/60 p-4 rounded-lg backdrop-blur-sm border border-neutral-800"
             >
-              {/* Icon animation */}
               <motion.div
+                className={`h-2.5 w-2.5 rounded-full ${step.color}`}
                 animate={{
-                  rotate: 360,
-                  scale: [1, 1.2, 1],
+                  scale: [1, 1.4, 1],
+                  opacity: [0.6, 1, 0.6]
                 }}
                 transition={{
-                  duration: 2,
+                  duration: 1.6,
                   repeat: Infinity,
-                  ease: "linear",
-                  delay: index * 0.5
+                  repeatType: "reverse",
+                  delay: index * 0.4
                 }}
-                className={`shrink-0 ${step.color}`}
-              >
-                <step.icon className="w-6 h-6" />
-              </motion.div>
+              />
 
               {/* Text animation */}
               <motion.span
-                className="text-sm font-medium text-gray-200"
+                className="text-sm font-medium text-neutral-200"
                 animate={{
                   opacity: [0.5, 1, 0.5],
                 }}
@@ -312,7 +291,7 @@ export const MarketAnalysis: React.FC<MarketAnalysisProps> = ({ crypto, predicti
 
               {/* Progress indicator */}
               <motion.div
-                className={`ml-auto h-1.5 rounded-full ${step.color}`}
+                className="ml-auto h-1.5 rounded-full bg-neutral-200/60"
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{
@@ -334,29 +313,27 @@ export const MarketAnalysis: React.FC<MarketAnalysisProps> = ({ crypto, predicti
   return (
     <div className="space-y-6">
       {error && (
-        <div className="bg-red-500/10 text-red-400 p-3 rounded-lg mb-4">
+        <div className="bg-neutral-900 text-neutral-300 p-3 rounded-lg mb-4 border border-neutral-800">
           {error}
         </div>
       )}
 
       {/* Market Summary - only show if there's content */}
       {analysis?.summary && (
-        <div className="bg-slate-800 rounded-lg p-4">
-          <h3 className="font-medium flex items-center gap-2 mb-3 text-white">
-            <Brain className="w-5 h-5 text-blue-400" />
+        <div className="bg-neutral-900/60 rounded-lg p-4 border border-neutral-800">
+          <h3 className="font-medium flex items-center gap-2 mb-3 text-neutral-100">
             Market Summary
           </h3>
           <div className="prose prose-invert max-w-none">
-            <p className="text-gray-200">{analysis.summary}</p>
+            <p className="text-neutral-200">{analysis.summary}</p>
           </div>
         </div>
       )}
 
       {/* AI Analysis - only show if there's content */}
       {analysis?.aiAnalysis && (
-        <div className="bg-slate-800 rounded-lg p-4">
-          <h3 className="font-medium flex items-center gap-2 mb-4 text-white">
-            <Brain className="w-5 h-5 text-purple-400" />
+        <div className="bg-neutral-900/60 rounded-lg p-4 border border-neutral-800">
+          <h3 className="font-medium flex items-center gap-2 mb-4 text-neutral-100">
             AI Analysis
           </h3>
           {analysis.aiAnalysis ? 
@@ -368,21 +345,14 @@ export const MarketAnalysis: React.FC<MarketAnalysisProps> = ({ crypto, predicti
 
       {/* Key Signals - only show if there are signals */}
       {analysis?.signals && analysis.signals.length > 0 && (
-        <div className="bg-slate-800 rounded-lg p-4">
-          <h3 className="font-medium flex items-center gap-2 mb-3 text-white">
-            <Activity className="w-5 h-5 text-green-400" />
+        <div className="bg-neutral-900/60 rounded-lg p-4 border border-neutral-800">
+          <h3 className="font-medium flex items-center gap-2 mb-3 text-neutral-100">
             Key Signals
           </h3>
           <div className="space-y-2">
             {analysis.signals.map((signal: Signal, index: number) => (
-              <div key={index} className="flex items-center gap-2 p-2 rounded-lg bg-slate-700 text-gray-200">
-                {signal.text.toLowerCase().includes('bullish') ? (
-                  <TrendingUp className="w-4 h-4 text-green-400" />
-                ) : signal.text.toLowerCase().includes('bearish') ? (
-                  <TrendingDown className="w-4 h-4 text-red-400" />
-                ) : (
-                  <Activity className="w-4 h-4 text-yellow-400" />
-                )}
+              <div key={index} className="flex items-center gap-2 p-2 rounded-lg bg-neutral-900 text-neutral-200 border border-neutral-800">
+                <span className="h-1.5 w-1.5 rounded-full bg-neutral-500" />
                 <span>{signal.text}</span>
               </div>
             ))}
@@ -392,8 +362,8 @@ export const MarketAnalysis: React.FC<MarketAnalysisProps> = ({ crypto, predicti
 
       {/* Only show empty state if no data at all */}
       {!analysis?.summary && !analysis?.aiAnalysis && (!analysis?.signals || analysis.signals.length === 0) && (
-        <div className="bg-slate-800 rounded-lg p-4 text-center">
-          <p className="text-gray-400">No analysis data available</p>
+        <div className="bg-neutral-900/60 rounded-lg p-4 text-center border border-neutral-800">
+          <p className="text-neutral-400">No analysis data available</p>
         </div>
       )}
     </div>
